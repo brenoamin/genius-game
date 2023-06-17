@@ -1,13 +1,13 @@
 from tupy import *
-from time import sleep
-from utils.buttons_mode import YELLOW_ON, YELLOW_OFF, GREEN_ON, GREEN_OFF, RED_ON, RED_OFF, BLUE_ON, BLUE_OFF, BLACK
-from threading import Timer
+from utils.buttons_mode import YELLOW_ON, YELLOW_OFF, GREEN_ON, GREEN_OFF, RED_ON, RED_OFF, BLUE_ON, BLUE_OFF
 
 class Button(Image):
     def __init__(self, file, x, y):
         self.file = file
         self.x = x
         self.y = y
+        self.toggle_count = 0
+        self.toggle_limit = 30
 
     def toggle(self):
         mapping = {
@@ -26,13 +26,19 @@ class Button(Image):
 
     def press(self):
         self.toggle()
-        Timer(1, self.toggle).start()
+        self.toggle_count = self.toggle_limit 
 
-
-
-
+    def decrement_toggle_count(self):
+        if self.toggle_count > 0:
+            self.toggle_count -= 1
+            if self.toggle_count == 0:
+                self.toggle()
+                
+    def update(self):
+        self.decrement_toggle_count()
+    
 
 if __name__ == '__main__':
     yellow_button = Button(YELLOW_OFF, 500, 500)
-    red_button = Button(RED_OFF,200, 100)
+    red_button = Button(RED_OFF, 200, 100)
     run(globals())
