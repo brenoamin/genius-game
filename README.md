@@ -17,7 +17,7 @@ Feel free to explore the repository to gain insights into the implementation of 
 Let the game begin, and let the genius within you shine!
 
 
-How to setup the project:
+## How to setup the project:
 
 -  Install and configure python on your local machine
 - Download the Tupy: Tupy is a graphical environment in which people can experiment with Python objects. It is inspired by Java's Greenfoot.
