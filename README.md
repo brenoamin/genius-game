@@ -15,3 +15,12 @@ By working on this project, I aim to deepen my understanding of Python, strength
 Feel free to explore the repository to gain insights into the implementation of the Genius game using Python and the application of OOP concepts. Contributions, suggestions, and feedback are highly appreciated.
 
 Let the game begin, and let the genius within you shine!
+
+
+How to setup the project:
+
+-  Install and configure python on your local machine
+- Download the Tupy: Tupy is a graphical environment in which people can experiment with Python objects. It is inspired by Java's Greenfoot.
+- Install the tupy environment running  `pip install git+https://github.com/rodrigorgs/tupy.git`
+- Go to the main file and run `python main.py`
+
