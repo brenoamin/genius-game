@@ -47,8 +47,8 @@ class Button(Image):
 
 if __name__ == '__main__':
     field = Field()
-    yellow_button = Button(YELLOW_ON, 490, 910)
-    red_button = Button(RED_ON, 1110, 290)
-    blue_button = Button(BLUE_ON, 1110, 910)
-    green_button = Button(GREEN_ON, 480, 290)
+    yellow_button = Button(YELLOW_OFF, 490, 910)
+    red_button = Button(RED_OFF, 1110, 290)
+    blue_button = Button(BLUE_OFF, 1110, 910)
+    green_button = Button(GREEN_OFF, 480, 290)
     run(globals())
