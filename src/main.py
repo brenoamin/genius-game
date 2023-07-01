@@ -3,6 +3,7 @@ from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF,
     BACKGROUND_SCENE, START
 import random
 
+PRESS_DURATION = 30
 
 class Button(Image):
     def __init__(self, file, x, y, off_file):
@@ -14,6 +15,8 @@ class Button(Image):
         self.blink_interval = 20  # Defina o intervalo desejado em frames
         self.blink_counter = 0
         self.is_button_on = False
+        self.is_pressing = False  # Indicador de que o botão está sendo pressionado
+        self.press_counter = 0  # Contador de tempo que o botão fica pressionado
 
     def toggle(self):
         mapping = {
@@ -41,7 +44,10 @@ class Button(Image):
         self.is_button_on = False
 
     def press(self):
-        self.start_blink()
+        if not self.is_pressing:
+            self.is_pressing = True
+            self.press_counter = 0
+            self.start_blink()
 
     def update(self):
         if self.is_blinking:
@@ -49,6 +55,12 @@ class Button(Image):
             if self.blink_counter >= self.blink_interval:
                 self.toggle()
                 self.blink_counter = 0
+        
+        if self.is_pressing:
+            self.press_counter += 1
+            if self.press_counter >= PRESS_DURATION:
+                self.is_pressing = False
+                self.stop_blink()
 
 
 class Game(Image):
