@@ -4,6 +4,7 @@ from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF,
 import random
 
 PRESS_DURATION = 30
+SEQUENCE_DELAY_DURATION = 120
 
 class Button(Image):
     def __init__(self, file, x, y, off_file):
@@ -12,11 +13,11 @@ class Button(Image):
         self.y = y
         self.off_file = off_file
         self.is_blinking = False
-        self.blink_interval = 20  # Defina o intervalo desejado em frames
+        self.blink_interval = 20 
         self.blink_counter = 0
         self.is_button_on = False
-        self.is_pressing = False  # Indicador de que o botão está sendo pressionado
-        self.press_counter = 0  # Contador de tempo que o botão fica pressionado
+        self.is_pressing = False
+        self.press_counter = 0
 
     def toggle(self):
         mapping = {
@@ -40,7 +41,7 @@ class Button(Image):
 
     def stop_blink(self):
         self.is_blinking = False
-        self.file = self.off_file  # Certifique-se de que o botão fique apagado após piscar
+        self.file = self.off_file 
         self.is_button_on = False
 
     def press(self):
@@ -48,6 +49,7 @@ class Button(Image):
             self.is_pressing = True
             self.press_counter = 0
             self.start_blink()
+            game.check_sequence(self)
 
     def update(self):
         if self.is_blinking:
@@ -62,18 +64,19 @@ class Button(Image):
                 self.is_pressing = False
                 self.stop_blink()
 
-
 class Game(Image):
+    INITIAL_LEVEL = 1
     def __init__(self):
         self.file = BACKGROUND_SCENE
         self.x = 450
         self.y = 270
         self.sequence = []
         self.next_step = 0
-        self.level = 5
+        self.level = Game.INITIAL_LEVEL
         self.blink_index = 0
         self.blink_counter = 0
-        self.blink_interval = 30  # Defina o intervalo desejado em frames
+        self.sequence_delay_counter = 0
+        self.blink_interval = 30 
 
     def set_buttons(self, buttons):
         self.buttons = buttons
@@ -88,7 +91,6 @@ class Game(Image):
 
     def blink_buttons(self):
         if self.blink_index >= len(self.sequence):
-            # Todos os botões foram piscados, então vamos parar o blinking
             for button in self.buttons:
                 button.stop_blink()
             return
@@ -104,10 +106,31 @@ class Game(Image):
             self.blink_counter = 0
             self.blink_index += 1
 
+    def check_sequence(self, button):
+        expect = self.sequence[self.next_step]
+        pressed_button = self.buttons.index(button)
+        if pressed_button == expect:
+            self.next_step += 1
+            print("correto")
+            if self.next_step == len(self.sequence):
+                print("You won!")
+                self.sequence_delay_counter = 0
+                self.level += 1
+                self.sequence_delay_counter = 1
+        else:
+            print("You lost!")
+            self.next_step = 0
+            self.level = Game.INITIAL_LEVEL
+
     def update(self):
         if self.blink_index < len(self.sequence):
             self.blink_buttons()
 
+        if self.sequence_delay_counter > 0:
+            self.sequence_delay_counter += 1
+            if self.sequence_delay_counter >= SEQUENCE_DELAY_DURATION:
+                self.sequence_delay_counter = 0
+                self.new_sequence()
 
 if __name__ == '__main__':
     game = Game()
