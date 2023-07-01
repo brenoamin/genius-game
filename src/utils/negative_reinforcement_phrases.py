@@ -1,0 +1,22 @@
+negative_reinforcement_phrases = [
+    "Oops, try again!",
+    "Not quite there.",
+    "Keep practicing!",
+    "You'll get it next time.",
+    "Almost had it!",
+    "Don't give up!",
+    "Try once more.",
+    "Not the right sequence.",
+    "Keep pushing!",
+    "You're improving!",
+    "Keep going!",
+    "You'll nail it soon.",
+    "You're getting closer!",
+    "Give it another shot.",
+    "Don't be discouraged!",
+    "Keep on trying!",
+    "It's okay, try again.",
+    "You're learning!",
+    "You're getting better!",
+    "Mistakes happen, try again."
+]

@@ -1,0 +1,22 @@
+positive_reinforcement_phrases = [
+    "Great job!",
+    "Well done!",
+    "You nailed it!",
+    "Awesome!",
+    "Fantastic!",
+    "Keep going!",
+    "You're on fire!",
+    "Excellent work!",
+    "You're a pro!",
+    "Incredible!",
+    "You're killing it!",
+    "Brilliant!",
+    "Way to go!",
+    "You're getting better!",
+    "Superb!",
+    "You're a superstar!",
+    "Impressive!",
+    "You've got this!",
+    "Outstanding!",
+    "You rock!"
+]
