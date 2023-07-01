@@ -1,6 +1,11 @@
 from tupy import *
 from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF, GREEN_OFF, RED_OFF, BLUE_OFF, \
     BACKGROUND_SCENE, START
+
+from utils.positive_reinforcement_phrases import positive_reinforcement_phrases
+from utils.negative_reinforcement_phrases import negative_reinforcement_phrases
+
+
 import random
 
 PRESS_DURATION = 30
@@ -111,14 +116,15 @@ class Game(Image):
         pressed_button = self.buttons.index(button)
         if pressed_button == expect:
             self.next_step += 1
-            print("correto")
             if self.next_step == len(self.sequence):
-                print("You won!")
+                reinforcement_phrase = random.choice(positive_reinforcement_phrases)
+                print(reinforcement_phrase)
                 self.sequence_delay_counter = 0
                 self.level += 1
                 self.sequence_delay_counter = 1
         else:
-            print("You lost!")
+            reinforcement_phrases = random.choice(negative_reinforcement_phrases)
+            print(reinforcement_phrases)
             self.next_step = 0
             self.level = Game.INITIAL_LEVEL
 
