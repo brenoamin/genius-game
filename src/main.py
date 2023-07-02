@@ -1,15 +1,15 @@
 from tupy import *
 from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF, GREEN_OFF, RED_OFF, BLUE_OFF, \
-    BACKGROUND_SCENE, START
+    BACKGROUND_SCENE, START, START_OFF
 
 from utils.positive_reinforcement_phrases import positive_reinforcement_phrases
 from utils.negative_reinforcement_phrases import negative_reinforcement_phrases
-
 
 import random
 
 PRESS_DURATION = 30
 SEQUENCE_DELAY_DURATION = 120
+
 
 class Button(Image):
     def __init__(self, file, x, y, off_file):
@@ -18,7 +18,7 @@ class Button(Image):
         self.y = y
         self.off_file = off_file
         self.is_blinking = False
-        self.blink_interval = 20 
+        self.blink_interval = 20
         self.blink_counter = 0
         self.is_button_on = False
         self.is_pressing = False
@@ -33,7 +33,9 @@ class Button(Image):
             YELLOW_ON: YELLOW_OFF,
             GREEN_ON: GREEN_OFF,
             RED_ON: RED_OFF,
-            BLUE_ON: BLUE_OFF
+            BLUE_ON: BLUE_OFF,
+            START: START_OFF,
+            START_OFF: START
         }
 
         if self.file in mapping:
@@ -46,7 +48,7 @@ class Button(Image):
 
     def stop_blink(self):
         self.is_blinking = False
-        self.file = self.off_file 
+        self.file = self.off_file
         self.is_button_on = False
 
     def press(self):
@@ -54,7 +56,6 @@ class Button(Image):
             self.is_pressing = True
             self.press_counter = 0
             self.start_blink()
-            game.check_sequence(self)
 
     def update(self):
         if self.is_blinking:
@@ -62,15 +63,60 @@ class Button(Image):
             if self.blink_counter >= self.blink_interval:
                 self.toggle()
                 self.blink_counter = 0
-        
+
         if self.is_pressing:
             self.press_counter += 1
             if self.press_counter >= PRESS_DURATION:
                 self.is_pressing = False
                 self.stop_blink()
 
+
+class StartButton(Button):
+    def __init__(self, game, file=START, x=447, y=315, off_file=START):
+        super().__init__(file, x, y, off_file)
+        self.game = game
+    
+    def toggle(self):
+        super().toggle()
+
+    def start_blink(self):
+        super().start_blink()
+
+    def stop_blink(self):
+        super().stop_blink()
+
+    def press(self):
+        super().press()
+        game.start()
+
+    def update(self):
+        super().update()
+
+
+class ColoredButton(Button):
+    def __init__(self, file, x, y, off_file):
+        super().__init__(file, x, y, off_file)
+
+    def toggle(self):
+        super().toggle()
+
+    def start_blink(self):
+        super().start_blink()
+
+    def stop_blink(self):
+        super().stop_blink()
+
+    def press(self):
+        super().press()
+        game.check_sequence(self)  # Só faz a checagem depois de realizar o processo de pressionar o botão e depois de uma sequência ser gerada. Na classe botão gera ele busca um index inexistente. Enquanto na classe filha isso não acontece.
+
+    def update(self):
+        super().update()
+
+
 class Game(Image):
     INITIAL_LEVEL = 1
+
     def __init__(self):
         self.file = BACKGROUND_SCENE
         self.x = 450
@@ -80,11 +126,20 @@ class Game(Image):
         self.level = Game.INITIAL_LEVEL
         self.blink_index = 0
         self.blink_counter = 0
+        self.blink_interval = 30
         self.sequence_delay_counter = 0
-        self.blink_interval = 30 
+        self.start_counter = 100  # Quando instanciamos o jogo é necessário que o start_counter seja maior que o start_timer para que ele aguarde o acionamento do startbutton
+        self.start_timer = 75  # Tempo de espera para gerar uma nova sequência por meio da função game.start()
 
     def set_buttons(self, buttons):
         self.buttons = buttons
+
+    def set_start_button(self, start_button):
+        self.start_button = start_button
+
+    def start(self):  # Redefine o nível inicial e zera o contador
+        self.level = Game.INITIAL_LEVEL
+        self.start_counter = 0  # Zera o contador toda vez que o botão é apertado, desse modo é possível resetar o jogo
 
     def new_sequence(self):
         self.sequence = [random.randint(0, 3) for _ in range(self.level)]
@@ -138,13 +193,20 @@ class Game(Image):
                 self.sequence_delay_counter = 0
                 self.new_sequence()
 
+        self.start_counter += 1
+        if self.start_counter == self.start_timer:
+            self.new_sequence()
+
+
 if __name__ == '__main__':
     game = Game()
 
-    yellow_button = Button(YELLOW_OFF, 321, 396, YELLOW_OFF)
-    red_button = Button(RED_OFF, 572, 145, RED_OFF)
-    blue_button = Button(BLUE_OFF, 578, 395, BLUE_OFF)
-    green_button = Button(GREEN_OFF, 320, 145, GREEN_OFF)
+    start_button = StartButton(game)
+    yellow_button = ColoredButton(YELLOW_OFF, 321, 396, YELLOW_OFF)
+    red_button = ColoredButton(RED_OFF, 572, 145, RED_OFF)
+    blue_button = ColoredButton(BLUE_OFF, 578, 395, BLUE_OFF)
+    green_button = ColoredButton(GREEN_OFF, 320, 145, GREEN_OFF)
     game.set_buttons([yellow_button, red_button, blue_button, green_button])
+    game.set_start_button(start_button)
 
     run(globals())
