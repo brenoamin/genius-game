@@ -87,7 +87,7 @@ class StartButton(Button):
 
     def press(self):
         super().press()
-        game.start()
+        game.start_animation()
 
     def update(self):
         super().update()
@@ -116,6 +116,7 @@ class ColoredButton(Button):
 
 class Game(Image):
     INITIAL_LEVEL = 1
+    ANIMATION_DURATION = 60
 
     def __init__(self):
         self.file = BACKGROUND_SCENE
@@ -130,6 +131,8 @@ class Game(Image):
         self.sequence_delay_counter = 0
         self.start_counter = 100  # Quando instanciamos o jogo é necessário que o start_counter seja maior que o start_timer para que ele aguarde o acionamento do startbutton
         self.start_timer = 75  # Tempo de espera para gerar uma nova sequência por meio da função game.start()
+        self.animation_counter = 0  # Contador para controlar a animação inicial
+        self.is_animating = False
 
     def set_buttons(self, buttons):
         self.buttons = buttons
@@ -165,6 +168,12 @@ class Game(Image):
         if self.blink_counter >= self.blink_interval * 2:
             self.blink_counter = 0
             self.blink_index += 1
+    def start_animation(self):
+        self.is_animating = True
+        self.animation_counter = 0
+
+        for button in self.buttons:
+            button.start_blink()
 
     def check_sequence(self, button):
         expect = self.sequence[self.next_step]
@@ -184,18 +193,32 @@ class Game(Image):
             self.level = Game.INITIAL_LEVEL
 
     def update(self):
-        if self.blink_index < len(self.sequence):
-            self.blink_buttons()
+        if self.is_animating:
+            if self.animation_counter < Game.ANIMATION_DURATION:
+                for button in self.buttons:
+                    button.update()
+                self.animation_counter += 1
+            else:
+                for button in self.buttons:
+                    button.stop_blink()
 
-        if self.sequence_delay_counter > 0:
-            self.sequence_delay_counter += 1
-            if self.sequence_delay_counter >= SEQUENCE_DELAY_DURATION:
-                self.sequence_delay_counter = 0
+                self.is_animating = False
                 self.new_sequence()
 
-        self.start_counter += 1
-        if self.start_counter == self.start_timer:
-            self.new_sequence()
+        else:
+            if self.blink_index < len(self.sequence):
+                self.blink_buttons()
+
+            if self.sequence_delay_counter > 0:
+                self.sequence_delay_counter += 1
+                if self.sequence_delay_counter >= SEQUENCE_DELAY_DURATION:
+                    self.sequence_delay_counter = 0
+                    self.new_sequence()
+
+            self.start_counter += 1
+            if self.start_counter == self.start_timer:
+                self.start_counter = 0
+                self.start_animation()  
 
 
 if __name__ == '__main__':
