@@ -75,43 +75,21 @@ class StartButton(Button):
     def __init__(self, game, file=START, x=447, y=315, off_file=START):
         super().__init__(file, x, y, off_file)
         self.game = game
-    
-    def toggle(self):
-        super().toggle()
-
-    def start_blink(self):
-        super().start_blink()
-
-    def stop_blink(self):
-        super().stop_blink()
 
     def press(self):
         super().press()
         game.start_animation()
 
-    def update(self):
-        super().update()
 
 
 class ColoredButton(Button):
     def __init__(self, file, x, y, off_file):
         super().__init__(file, x, y, off_file)
 
-    def toggle(self):
-        super().toggle()
-
-    def start_blink(self):
-        super().start_blink()
-
-    def stop_blink(self):
-        super().stop_blink()
-
     def press(self):
         super().press()
-        game.check_sequence(self)  # Só faz a checagem depois de realizar o processo de pressionar o botão e depois de uma sequência ser gerada. Na classe botão gera ele busca um index inexistente. Enquanto na classe filha isso não acontece.
+        game.check_sequence(self) 
 
-    def update(self):
-        super().update()
 
 
 class Game(Image):
