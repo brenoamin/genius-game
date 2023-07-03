@@ -1,6 +1,7 @@
 from tupy import *
 from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF, GREEN_OFF, RED_OFF, BLUE_OFF, \
     BACKGROUND_SCENE, START, START_OFF
+from enum import Enum
 
 from utils.positive_reinforcement_phrases import positive_reinforcement_phrases
 from utils.negative_reinforcement_phrases import negative_reinforcement_phrases
@@ -75,11 +76,21 @@ class StartButton(Button):
     def __init__(self, game, file=START, x=447, y=315, off_file=START):
         super().__init__(file, x, y, off_file)
         self.game = game
+        self.start_status = False
 
     def press(self):
         super().press()
+        self.toggle_status()
         game.start_animation()
 
+    def toggle_status(self):
+        mapping = {
+            True: False,
+            False: True
+        }
+
+        if self.start_status in mapping:
+            self.start_status = mapping[self.start_status]
 
 
 class ColoredButton(Button):
@@ -87,9 +98,9 @@ class ColoredButton(Button):
         super().__init__(file, x, y, off_file)
 
     def press(self):
-        super().press()
-        game.check_sequence(self) 
-
+        if start_button.start_status:
+            super().press()
+            game.check_sequence(self)
 
 
 class Game(Image):
@@ -146,6 +157,7 @@ class Game(Image):
         if self.blink_counter >= self.blink_interval * 2:
             self.blink_counter = 0
             self.blink_index += 1
+
     def start_animation(self):
         self.is_animating = True
         self.animation_counter = 0
@@ -181,10 +193,12 @@ class Game(Image):
                     button.stop_blink()
 
                 self.is_animating = False
-                self.new_sequence()
+
+                if start_button.start_status:
+                    self.new_sequence()
 
         else:
-            if self.blink_index < len(self.sequence):
+            if self.blink_index < len(self.sequence) and start_button.start_status:
                 self.blink_buttons()
 
             if self.sequence_delay_counter > 0:
