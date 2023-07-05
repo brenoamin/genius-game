@@ -16,11 +16,34 @@ Feel free to explore the repository to gain insights into the implementation of 
 
 Let the game begin, and let the genius within you shine!
 
+# Instructions on how to use the program
+
+Just like the classic game Genius (Simon), our game consists of trying to memorize a sequence of colors that is randomly generated during the game. How to start playing? Click the Start button on the screen and press it, fasten your seatbelts, prepare your memory, and patiently wait for the light signal; the first sequence will be easy. Once you see the color, press the button you think flashed sequentially, the order matters. So, have you managed to get past 10 colors? If you make a mistake, don't be sad, read the message displayed on the screen, click on the game, and ask for a new sequence; there's always room to go further!
+
+
+# Team members' names:
+
+- Breno Amin
+- Isaac Araújo
+- Júlio Ângelo
+- Pedro Magalhães
+
+# For each team member, a description of their contribution, as well as a rating from 0 to 5 indicating their level of contribution to the project:
+
+Breno Amin was responsible for conceptualizing the game, creating the repository with their respective descriptions, organizing the interface in Tupy, conceptualizing the modules used in the project, researching benchmarks, reviewing the constructed codes, creating the Button class, and actively contributing to the Game class, as well as building all on-screen animations. -> Rating: 5
+
+Isaac Araújo was involved in the game's conceptualization and planning, and participated in building all the game's classes, particularly the StartButton, ColoredButton(), and Game() classes. Additionally, Isaac reviewed and fixed errors related to class typings. -> Rating: 5
+
+Júlio Ângelo contributed to building the images that composed the interface, implemented docstrings, encapsulation, and reviewed the codes. -> Rating: 4
+
+Pedro Magalhães was responsible for taking care of project encapsulation, as well as implementing the necessary typings, considering `mypy --strict`. -> Rating: 3.5
 
 ## How to setup the project:
 
 -  Install and configure python on your local machine
-- Download the Tupy: Tupy is a graphical environment in which people can experiment with Python objects. It is inspired by Java's Greenfoot.
+- Download the Tupy: Tupy is a graphical environment in which people can experiment with Python objects. It is inspired by Java's Greenfoot. Visit the  [Tupy documentation](https://github.com/rodrigorgs/tupy)
 - Install the tupy environment running  `pip install git+https://github.com/rodrigorgs/tupy.git`
 - Go to the main file and run `python main.py`
+
+
 
