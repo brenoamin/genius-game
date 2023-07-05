@@ -1,14 +1,13 @@
 from tupy import *
 from utils.buttons_mode import YELLOW_ON, GREEN_ON, RED_ON, BLUE_ON, YELLOW_OFF, GREEN_OFF, RED_OFF, BLUE_OFF, \
     BACKGROUND_SCENE, START, START_OFF
-from enum import Enum
 
 from utils.positive_reinforcement_phrases import positive_reinforcement_phrases
 from utils.negative_reinforcement_phrases import negative_reinforcement_phrases
 
 import random
 
-from typing import Any, List
+from typing import List
 
 PRESS_DURATION = 30
 SEQUENCE_DELAY_DURATION = 120
@@ -36,7 +35,7 @@ class Player:
         self._score += 1
 
     @property
-    def score(self)-> int:
+    def score(self) -> int:
         return self._score
 
 
@@ -59,7 +58,7 @@ class Button(Image):
         press_counter (int): contador usado para controlar o tempo de pressionamento do botão.
 
     Métodos:
-        __init__(self, file: Image, x: int, y: int, off_file: Image): 
+        __init__(self, file: str, x: int, y: int, off_file: str):
             Inicializa a classe Button com as imagens, posição e status fornecidos.
         toggle(self) -> None:
             Alterna o estado do botão entre ligado e desligado.
@@ -74,14 +73,13 @@ class Button(Image):
 
     """
 
-    def __init__(self, file: Image, x: int, y: int, off_file: Image):
+    def __init__(self, file: Image, x: int, y: int, off_file: Image) -> None:
         """
         Inicializa a classe Button.
 
         Returns:
             None
         """
-        
 
         self.file = file
         self.x = x
@@ -183,119 +181,6 @@ class Button(Image):
                 self.stop_blink()
 
 
-class StartButton(Button):
-    """
-    Classe que representa o botão de início do jogo.
-
-    Esta classe herda da classe Button e adiciona um status de início para controlar o estado do botão.
-
-    Atributos:
-        game (Any): instância do jogo que utiliza o botão.
-        start_status (bool): status do botão de início.
-        
-    Métodos:
-        __init__(self, game: Any, file=START, x: int=447, y: int=315, off_file=START): 
-            Inicializa a classe StartButton com o arquivo, posição e instância de jogo fornecidos.
-            
-        press(self) -> None:
-            Processa o pressionamento do botão e inicia a animação de início do jogo.
-            
-        toggle_status(self) -> None:
-            Alterna o status do botão de início entre ligado e desligado.
-
-    """
-    def __init__(self, game: Any, file=START, x: int=447, y: int=315, off_file=START):
-        """
-        Inicializa a classe StartButton.
-
-        Argumentos:
-            game (Any): instância do jogo que utiliza o botão.
-            file (str): caminho para o arquivo de imagem do botão.
-            x (int): posição horizontal do botão na tela.
-            y (int): posição vertical do botão na tela.
-            off_file (str): caminho para o arquivo de imagem do botão desligado.
-
-        Retorna:
-            None
-        """
-        super().__init__(file, x, y, off_file)
-        self.game = game
-        self.start_status = False
-
-    def press(self) -> None:
-        """
-        Processa o pressionamento do botão.
-
-        Esta função é chamada quando o botão é pressionado e inicia a animação de início do jogo.
-
-        Retorna:
-            None
-        """
-        super().press()
-        self.toggle_status()
-        game.start_animation()
-
-    def toggle_status(self) -> None:
-        """
-        Altera o status do botão de início.
-
-        Esta função alterna o status do botão de início entre ligado e desligado.
-
-        Retorna:
-            None
-        """
-        mapping = {
-            True: False,
-            False: True
-        }
-
-        if self.start_status in mapping:
-            self.start_status = mapping[self.start_status]
-
-
-class ColoredButton(Button):
-    """
-    Classe que representa os botões coloridos do jogo.
-
-    Esta classe herda da classe Button e adiciona um método para processar o pressionamento do botão.
-
-    Métodos:
-        __init__(self, file: Button, x: int, y: int, off_file: Button): 
-            Inicializa a classe ColoredButton com as imagens, posição e status fornecidos.
-            
-        press(self) -> None:
-            Processa o pressionamento do botão e verifica a sequência de cores.
-
-    """
-    def __init__(self, file: Button, x: int, y: int, off_file: Button):
-        """
-        Inicializa a classe ColoredButton.
-
-        Argumentos:
-            file (Button): imagem do botão colorido.
-            x (int): posição horizontal do botão na tela.
-            y (int): posição vertical do botão na tela.
-            off_file (Button): imagem do botão desligado.
-
-        Retorna:
-            None
-        """
-        super().__init__(file, x, y, off_file)
-
-    def press(self) -> None:
-        """
-        Processa o pressionamento do botão.
-
-        Esta função é chamada quando o botão é pressionado e verifica a sequência de cores do jogo.
-
-        Retorna:
-            None
-        """
-        if start_button.start_status:
-            super().press()
-            game.check_sequence(self)
-
-
 class Game(Image):
     """
     Classe que representa o jogo Ginius.
@@ -321,7 +206,7 @@ class Game(Image):
         is_animating (bool): status de animação do jogo.
 
     Métodos:
-        set_buttons(self, buttons: ColoredButton) -> None:
+        set_buttons(self, buttons: Button) -> None:
             Define os botões coloridos do jogo.
         set_start_button(self, start_button: StartButton) -> None:
             Define o botão de início do jogo.
@@ -333,7 +218,7 @@ class Game(Image):
             Pisca as luzes dos botões de acordo com a sequência de cores.
         start_animation(self) -> None:
             Inicia a animação de início do jogo.
-        check_sequence(self, button: Any) -> None:
+        check_sequence(self, button: Button) -> None:
             Verifica a sequência de cores do jogo de acordo com o botão pressionado.
         update(self) -> None:
             Atualiza o estado do jogo de acordo com o status de animação e sequência de cores.
@@ -343,7 +228,7 @@ class Game(Image):
     INITIAL_LEVEL = 1
     ANIMATION_DURATION = 60
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Inicializa a classe Game.
 
@@ -353,47 +238,47 @@ class Game(Image):
         self.file = BACKGROUND_SCENE
         self.x = 450
         self.y = 270
-        self.sequence = []
+        self.sequence: List[int] = []
         self.next_step = 0
         self.level = Game.INITIAL_LEVEL
         self.blink_index = 0
         self.blink_counter = 0
         self.blink_interval = 30
         self.sequence_delay_counter = 0
-        self.start_counter = 100  # Quando instanciamos o jogo é necessário que o start_counter seja maior que o start_timer para que ele aguarde o acionamento do startbutton
-        self.start_timer = 75  # Tempo de espera para gerar uma nova sequência por meio da função game.start()
-        self.animation_counter = 0  # Contador para controlar a animação inicial
+        self.start_counter = 100
+        self.start_timer = 75
+        self.animation_counter = 0
         self.is_animating = False
 
-    def set_buttons(self, buttons: ColoredButton) -> None:
+    def set_buttons(self, buttons: List[Button]) -> None:
         """
         Define os botões coloridos do jogo.
 
         Esta função recebe uma lista de botões coloridos e define os botões do jogo.
 
         Argumentos:
-            buttons (ColoredButton): lista de botões coloridos.
+            buttons (Button): lista de botões coloridos.
 
         Retorna:
             None
         """
         self.buttons = buttons
 
-    def set_start_button(self, start_button: StartButton) -> None:
+    def set_start_button(self, start_button: Button) -> None:
         """
         Define o botão de início do jogo.
 
         Esta função recebe o botão de início do jogo e define o botão do jogo.
 
         Argumentos:
-            start_button (StartButton): botão de início do jogo.
+            start_button (Button): botão de início do jogo.
 
         Retorna:
             None
         """
         self.start_button = start_button
 
-    def start(self) -> None:  # Redefine o nível inicial e zera o contador
+    def start(self) -> None:
         """
         Inicia o jogo.
 
@@ -403,7 +288,7 @@ class Game(Image):
             None
         """
         self.level = Game.INITIAL_LEVEL
-        self.start_counter = 0  # Zera o contador toda vez que o botão é apertado, desse modo é possível resetar o jogo
+        self.start_counter = 0
 
     def new_sequence(self) -> List[int]:
         """
@@ -461,14 +346,14 @@ class Game(Image):
         for button in self.buttons:
             button.start_blink()
 
-    def check_sequence(self, button: Any) -> None:
+    def check_sequence(self, button: Button) -> None:
         """
         Verifica a sequência de cores do jogo de acordo com o botão pressionado.
 
         Esta função é chamada quando um botão colorido é pressionado e verifica se a sequência de cores foi seguida corretamente.
 
         Argumentos:
-            button (Any): botão colorido pressionado.
+            button (Button): botão colorido pressionado.
 
         Retorna:
             None
@@ -528,7 +413,122 @@ class Game(Image):
             self.start_counter += 1
             if self.start_counter == self.start_timer:
                 self.start_counter = 0
-                self.start_animation()  
+                self.start_animation()
+
+
+class StartButton(Button):
+    """
+    Classe que representa o botão de início do jogo.
+
+    Esta classe herda da classe Button e adiciona um status de início para controlar o estado do botão.
+
+    Atributos:
+        game (Game): instância do jogo que utiliza o botão.
+        start_status (bool): status do botão de início.
+
+    Métodos:
+        __init__(self, game: Game, file=START, x: int=447, y: int=315, off_file=START):
+            Inicializa a classe StartButton com o arquivo, posição e instância de jogo fornecidos.
+
+        press(self) -> None:
+            Processa o pressionamento do botão e inicia a animação de início do jogo.
+
+        toggle_status(self) -> None:
+            Alterna o status do botão de início entre ligado e desligado.
+
+    """
+
+    def __init__(self, game: Game, file: str = START, x: int = 447, y: int = 315, off_file: str = START) -> None:
+        """
+        Inicializa a classe StartButton.
+
+        Argumentos:
+            game (Game): instância do jogo que utiliza o botão.
+            file (str): caminho para o arquivo de imagem do botão.
+            x (int): posição horizontal do botão na tela.
+            y (int): posição vertical do botão na tela.
+            off_file (str): caminho para o arquivo de imagem do botão desligado.
+
+        Retorna:
+            None
+        """
+        super().__init__(file, x, y, off_file)
+        self.game = game
+        self.start_status = False
+
+    def press(self) -> None:
+        """
+        Processa o pressionamento do botão.
+
+        Esta função é chamada quando o botão é pressionado e inicia a animação de início do jogo.
+
+        Retorna:
+            None
+        """
+        super().press()
+        self.toggle_status()
+        game.start_animation()
+
+    def toggle_status(self) -> None:
+        """
+        Altera o status do botão de início.
+
+        Esta função alterna o status do botão de início entre ligado e desligado.
+
+        Retorna:
+            None
+        """
+        mapping = {
+            True: False,
+            False: True
+        }
+
+        if self.start_status in mapping:
+            self.start_status = mapping[self.start_status]
+
+
+class ColoredButton(Button):
+    """
+    Classe que representa os botões coloridos do jogo.
+
+    Esta classe herda da classe Button e adiciona um método para processar o pressionamento do botão.
+
+    Métodos:
+        __init__(self, file: Button, x: int, y: int, off_file: Button):
+            Inicializa a classe ColoredButton com as imagens, posição e status fornecidos.
+
+        press(self) -> None:
+            Processa o pressionamento do botão e verifica a sequência de cores.
+
+    """
+
+    def __init__(self, file: str, x: int, y: int, off_file: str) -> None:
+        """
+        Inicializa a classe ColoredButton.
+
+        Argumentos:
+            file (Button): imagem do botão colorido.
+            x (int): posição horizontal do botão na tela.
+            y (int): posição vertical do botão na tela.
+            off_file (Button): imagem do botão desligado.
+
+        Retorna:
+            None
+        """
+        super().__init__(file, x, y, off_file)
+
+    def press(self) -> None:
+        """
+        Processa o pressionamento do botão.
+
+        Esta função é chamada quando o botão é pressionado e verifica a sequência de cores do jogo.
+
+        Retorna:
+            None
+        """
+        if start_button.start_status:
+            super().press()
+            game.check_sequence(self)
 
 
 if __name__ == '__main__':
